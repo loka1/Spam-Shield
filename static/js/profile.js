@@ -48,7 +48,7 @@ async function loadProfileData() {
         const data = await response.json();
         
         // Update profile information
-        updateProfileInfo(data);
+        updateProfileInfo(data.user);
         
         // Load usage statistics
         loadUsageStats();
@@ -60,6 +60,7 @@ async function loadProfileData() {
 }
 
 function updateProfileInfo(data) {
+    
     // Update profile fields
     document.getElementById('profile-username').textContent = data.username;
     document.getElementById('profile-email').textContent = data.email;
