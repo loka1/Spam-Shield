@@ -1,200 +1,145 @@
-# Spam Detection API with Web UI
+# Spam Shield - Email Spam Detection Service
 
-A simple API and web interface for detecting spam text messages using machine learning.
+![Spam Shield Logo](static/img/logo.png)
+
+Spam Shield is a modern web application that uses machine learning to detect and protect users from spam emails. Built with Python Flask and modern web technologies, it provides both a user-friendly interface and a robust API for spam detection.
 
 ## Features
 
-- **Spam Detection**: Check if a text message is spam or not
-- **User Authentication**: Register, login, and manage your account
-- **History Tracking**: View your past spam checks (for authenticated users)
-- **Rate Limiting**: Guest users are limited to 10 requests per day
-- **API Documentation**: Interactive Swagger UI documentation
-- **Responsive Web UI**: Works on desktop and mobile devices
-- **Admin Panel**: Comprehensive admin interface for managing users and viewing statistics
+- 🔍 Real-time spam detection
+- 📊 User dashboard with history tracking
+- 🔐 Secure user authentication
+- 📱 Responsive design
+- 🔌 RESTful API
+- 👥 User management
+- 📈 Analytics dashboard for admins
 
-## Demo
+## Tech Stack
 
-A demo account is available for quick testing:
-- Username: `demo`
-- Password: `password123`
+### Backend
+- Python 3.8+
+- Flask
+- SQLAlchemy
+- JWT Authentication
+- Machine Learning (scikit-learn)
 
-A demo admin account is also available:
-- Username: `demoadmin`
-- Password: `adminpassword123`
+### Frontend
+- HTML5 & CSS3
+- JavaScript (ES6+)
+- Bootstrap 5
+- Bootstrap Icons
 
-Or use the "Demo Login" or "Demo Admin Login" buttons on the login page.
+## Getting Started
 
-## API Usage
+### Prerequisites
+- Python 3.8 or higher
+- pip (Python package manager)
+- Virtual environment (recommended)
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/spam-shield.git
+cd spam-shield
+```
+
+2. Create and activate virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+4. Set up environment variables
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+5. Initialize the database
+```bash
+flask db upgrade
+```
+
+6. Run the application
+```bash
+flask run
+```
+
+The application will be available at `http://localhost:5000`
+
+## API Documentation
 
 ### Authentication
-
-- **Guest access**: Limited to 10 requests per day
-- **Authenticated access**: Unlimited requests with history tracking
-
-Add the header: `Authorization: Bearer your-token` to your requests
+All API endpoints require JWT authentication. Include the token in the Authorization header:
+```
+Authorization: Bearer <your_token>
+```
 
 ### Endpoints
 
-- `POST /api/check-spam`: Check if text is spam
-- `GET /api/history`: Get user's spam check history (requires authentication)
-- `GET /api/example/spam`: Get an example of spam detection for a typical spam message
-- `GET /api/example/ham`: Get an example of spam detection for a typical non-spam message
-- `POST /auth/register`: Register a new user
-- `POST /auth/login`: Login a user
-- `POST /auth/refresh`: Refresh access token
-- `GET /auth/profile`: Get user profile (requires authentication)
-- `GET /auth/demo-token`: Get a token for the demo user (for quick testing)
-- `GET /auth/demo-admin-token`: Get a token for the demo admin user (for quick testing)
+#### Check Email
+```http
+POST /api/check-spam
+Content-Type: application/json
 
-## Web UI
-
-The web UI provides a user-friendly interface for the API:
-
-- **Home Page**: Information about the service
-- **Check Spam**: Test emails for spam content
-- **History**: View your spam check history (requires authentication)
-- **About Us**: Information about the project and team
-- **Login/Register**: Create an account or login
-- **API Docs**: Interactive API documentation
-
-## Admin Panel
-
-The application includes an admin panel for managing users and viewing statistics:
-
-### Admin Features
-
-- **Dashboard**: Overview of users, requests, and spam detection rate
-- **User Management**: Add, edit, and delete users
-- **Request History**: View and filter all spam check requests
-- **Statistics**: View charts and statistics about spam detection
-
-### Admin Access
-
-Only users with admin privileges can access the admin panel. To create an admin user:
-
-```
-python scripts/create_admin.py <username> <email> <password>
+{
+    "text": "Email content to check",
+    "subject": "Optional email subject"
+}
 ```
 
-For quick testing, use the demo admin account or the "Demo Admin Login" button on the login page.
+#### Get History
+```http
+GET /api/history
+```
 
-## Technologies Used
-
-- **Backend**: Flask, Flask-RESTx, SQLAlchemy, JWT
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap, Chart.js
-- **Machine Learning**: Scikit-learn, NLTK
-- **Database**: SQLite (development), PostgreSQL (production)
-
-## Development Setup
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/spam-detection-api.git
-   cd spam-detection-api
-   ```
-
-2. Create a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-4. Set up environment variables:
-   ```
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-
-5. Initialize the database:
-   ```
-   flask db init
-   flask db migrate
-   flask db upgrade
-   ```
-
-6. Create a demo admin user (optional):
-   ```
-   python scripts/create_demo_admin.py
-   ```
-
-7. Run the development server:
-   ```
-   flask run
-   ```
-
-8. Visit http://localhost:5000 in your browser
-
-## Deployment
-
-The application is ready for deployment on platforms like Heroku:
-
-1. Create a new Heroku app:
-   ```
-   heroku create your-app-name
-   ```
-
-2. Add PostgreSQL addon:
-   ```
-   heroku addons:create heroku-postgresql:hobby-dev
-   ```
-
-3. Set environment variables:
-   ```
-   heroku config:set SECRET_KEY=your-secret-key
-   heroku config:set JWT_SECRET_KEY=your-jwt-secret
-   ```
-
-4. Deploy the application:
-   ```
-   git push heroku main
-   ```
-
-5. Initialize the database:
-   ```
-   heroku run flask db upgrade
-   ```
-
-6. Create admin users:
-   ```
-   heroku run python scripts/create_admin.py admin admin@example.com password
-   heroku run python scripts/create_demo_admin.py
-   ```
+For complete API documentation, visit `/docs` when running the application.
 
 ## Project Structure
+```
+spam-shield/
+├── app/
+│   ├── __init__.py
+│   ├── models/
+│   ├── routes/
+│   └── services/
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── img/
+├── templates/
+├── tests/
+├── .env.example
+├── requirements.txt
+└── README.md
+```
 
-```
-spam-detection-api/
-├── app.py                  # Main application file
-├── config.py               # Configuration settings
-├── requirements.txt        # Python dependencies
-├── .env.example            # Example environment variables
-├── auth/                   # Authentication module
-│   ├── __init__.py
-│   ├── routes.py           # Auth API endpoints
-│   └── utils.py            # Auth utilities
-├── database/               # Database module
-│   ├── __init__.py
-│   └── models.py           # Database models
-├── models/                 # ML models
-│   └── spam_model.py       # Spam detection model
-├── routes.py               # Route constants
-├── scripts/                # Utility scripts
-│   ├── create_admin.py     # Create admin user
-│   └── create_demo_admin.py # Create demo admin
-├── static/                 # Static files
-│   ├── css/                # CSS files
-│   ├── js/                 # JavaScript files
-│   └── img/                # Images
-└── templates/              # HTML templates
-    ├── admin/              # Admin templates
-    └── ...                 # Other templates
-```
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+- Email: support@spamshield.com
+- Website: https://spamshield.com
+- GitHub: [Your GitHub Profile](https://github.com/loka1)
+
+## Acknowledgments
+
+- Bootstrap team for the amazing UI framework
+- Flask team for the excellent web framework
+- All contributors who have helped with the project 
