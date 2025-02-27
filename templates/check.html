@@ -33,12 +33,18 @@
                 </form>
             </div>
         </div>
-        
-        <div id="result-card" class="card mt-4" style="display: none;">
-            <div class="card-header">
-                <h3 class="text-center">Analysis Result</h3>
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultModalLabel">Analysis Result</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="card-body">
+            <div class="modal-body">
                 <div class="text-center mb-4">
                     <div id="result-icon" style="font-size: 3rem;"></div>
                     <h4 id="result-title" class="mt-3"></h4>
@@ -57,6 +63,9 @@
                         <p id="result-text" style="white-space: pre-wrap;"></p>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

@@ -85,7 +85,6 @@ async function handleSpamCheck(e) {
 }
 
 function displayResult(data) {
-    const resultCard = document.getElementById('result-card');
     const resultIcon = document.getElementById('result-icon');
     const resultTitle = document.getElementById('result-title');
     const confidenceBar = document.getElementById('confidence-bar');
@@ -126,11 +125,9 @@ function displayResult(data) {
         `;
     }
     
-    // Show result card
-    resultCard.style.display = 'block';
-    
-    // Scroll to result
-    resultCard.scrollIntoView({ behavior: 'smooth' });
+    // Show modal
+    const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+    resultModal.show();
 }
 
 async function loadSpamExample() {
