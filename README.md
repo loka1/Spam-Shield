@@ -1,6 +1,5 @@
 # Spam Shield - Email Spam Detection Service
 
-![Spam Shield Logo](static/img/logo.png)
 
 Spam Shield is a modern web application that uses machine learning to detect and protect users from spam emails. Built with Python Flask and modern web technologies, it provides both a user-friendly interface and a robust API for spam detection.
 
