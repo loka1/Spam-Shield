@@ -5,44 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Spam Detection API{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('frontend_index') }}">Spam Detection API</a>
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('frontend_index') }}">
+                <i class="bi bi-shield-check me-2"></i>
+                <span>Spam Shield</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('frontend_index') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('frontend_index') }}">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('frontend_check') }}">Check Spam</a>
+                        <a class="nav-link" href="{{ url_for('frontend_check') }}">
+                            <i class="bi bi-search"></i> Check Spam
+                        </a>
                     </li>
-                    <li class="nav-item" id="history-nav" style="display: none;">
-                        <a class="nav-link" href="{{ url_for('frontend_history') }}">History</a>
+                    <li class="nav-item auth-required" style="display: none;">
+                        <a class="nav-link" href="{{ url_for('frontend_history') }}">
+                            <i class="bi bi-clock-history"></i> History
+                        </a>
                     </li>
-                    <li class="nav-item" id="admin-nav" style="display: none;">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+                    <li class="nav-item admin-required" style="display: none;">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Admin Panel
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('frontend_about') }}">About Us</a>
+                        <a class="nav-link" href="{{ url_for('frontend_about') }}">
+                            <i class="bi bi-info-circle"></i> About
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/docs">API Docs</a>
+                        <a class="nav-link" href="/docs">
+                            <i class="bi bi-file-text"></i> API Docs
+                        </a>
                     </li>
                 </ul>
-                <div class="d-flex" id="auth-buttons">
-                    <a href="{{ url_for('frontend_login') }}" class="btn btn-outline-light me-2">Login</a>
-                    <a href="{{ url_for('frontend_register') }}" class="btn btn-light">Register</a>
-                </div>
-                <div class="d-flex" id="user-info" style="display: none;">
-                    <span class="navbar-text me-3" id="username-display"></span>
-                    <button class="btn btn-outline-light" id="logout-btn">Logout</button>
+                <div class="ms-auto">
+                    <div class="guest-only auth-buttons">
+                        <a href="{{ url_for('frontend_login') }}" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                        <a href="{{ url_for('frontend_register') }}" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> Register
+                        </a>
+                    </div>
+                    <div class="auth-only auth-buttons">
+                        <span class="navbar-text me-3">
+                            <i class="bi bi-person-circle"></i>
+                            <span id="username-display"></span>
+                        </span>
+                        <button class="btn btn-outline-primary" id="logout-btn">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,7 +82,7 @@
 
     <footer class="footer mt-5 py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">Spam Detection API &copy; 2025</span>
+            <span class="text-muted">Spam Shield &copy; 2025</span>
         </div>
     </footer>
 

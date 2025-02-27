@@ -80,27 +80,37 @@ async function checkAuthStatus() {
 
 // Show/hide auth buttons based on login status
 function showAuthButtons(isLoggedIn, username = '', isAdmin = false) {
-    const authButtons = document.getElementById('auth-buttons');
-    const userInfo = document.getElementById('user-info');
+    const guestElements = document.querySelectorAll('.guest-only');
+    const authElements = document.querySelectorAll('.auth-only');
+    const authRequired = document.querySelectorAll('.auth-required');
+    const adminRequired = document.querySelectorAll('.admin-required');
     const usernameDisplay = document.getElementById('username-display');
-    const historyNav = document.getElementById('history-nav');
-    const adminNav = document.getElementById('admin-nav');
     
     if (isLoggedIn) {
-        // User is logged in
-        if (authButtons) authButtons.style.display = 'none';
-        if (userInfo) {
-            userInfo.style.display = 'flex';
-            if (usernameDisplay) usernameDisplay.textContent = username;
+        // Show authenticated elements
+        guestElements.forEach(el => el.classList.remove('show'));
+        authElements.forEach(el => el.classList.add('show'));
+        authRequired.forEach(el => el.classList.add('show'));
+        
+        // Show admin elements if user is admin
+        adminRequired.forEach(el => {
+            if (isAdmin) {
+                el.classList.add('show');
+            } else {
+                el.classList.remove('show');
+            }
+        });
+        
+        // Set username
+        if (usernameDisplay) {
+            usernameDisplay.textContent = username;
         }
-        if (historyNav) historyNav.style.display = 'block';
-        if (adminNav && isAdmin) adminNav.style.display = 'block';
     } else {
-        // User is not logged in
-        if (authButtons) authButtons.style.display = 'flex';
-        if (userInfo) userInfo.style.display = 'none';
-        if (historyNav) historyNav.style.display = 'none';
-        if (adminNav) adminNav.style.display = 'none';
+        // Show guest elements
+        guestElements.forEach(el => el.classList.add('show'));
+        authElements.forEach(el => el.classList.remove('show'));
+        authRequired.forEach(el => el.classList.remove('show'));
+        adminRequired.forEach(el => el.classList.remove('show'));
     }
 }
 
