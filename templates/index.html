@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Spam Detection API - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="card-title">Welcome to Spam Detection API</h1>
+                <p class="card-text">
+                    This service helps you identify spam messages using machine learning.
+                </p>
+                <div class="mt-4">
+                    <a href="/check" class="btn btn-primary btn-lg">Check for Spam</a>
+                    <a href="/docs" class="btn btn-outline-secondary btn-lg ms-2" target="_blank">API Documentation</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Features</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Spam Detection</h5>
+                                <p class="card-text">Check if a message is spam with our machine learning model.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">User Accounts</h5>
+                                <p class="card-text">Register to get unlimited access and track your history.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">API Access</h5>
+                                <p class="card-text">Integrate with our API for your applications.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>How It Works</h3>
+            </div>
+            <div class="card-body">
+                <p>Our spam detection system uses a machine learning model trained on a dataset of spam and non-spam (ham) messages. The model analyzes the text content and provides a prediction along with a confidence score.</p>
+                <p>For best results, provide the complete message you want to check.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,10 +1,19 @@
-from flask import request, jsonify
+from flask import request, jsonify, url_for
 from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from database.models import User, db
 from .utils import generate_tokens
+from routes import *  # Import route constants
 
+# Create a namespace without a prefix (the prefix will be added by the main API)
 auth_ns = Namespace('auth', description='Authentication operations')
+
+# Define endpoints for the auth namespace
+auth_register = AUTH_REGISTER.replace('/auth/', '')
+auth_login = AUTH_LOGIN.replace('/auth/', '')
+auth_refresh = AUTH_REFRESH.replace('/auth/', '')
+auth_profile = AUTH_PROFILE.replace('/auth/', '')
+auth_demo_token = AUTH_DEMO_TOKEN.replace('/auth/', '')
 
 # Models for request and response
 user_model = auth_ns.model('User', {

@@ -1,33 +1,73 @@
-# Spam Detection API
+# Spam Detection API with Web UI
 
-A Flask-based API that provides spam detection services for a Flutter application, with Swagger documentation and user authentication.
-
-## Repository
-
-This project is available on GitHub: [https://github.com/loka1/spam_detection_api](https://github.com/loka1/spam_detection_api)
+A simple API and web interface for detecting spam text messages using machine learning.
 
 ## Features
 
-- RESTful API for spam detection
-- Simple machine learning model to classify text as spam or not
-- User authentication system
-- Request history tracking for authenticated users
-- Guest access with rate limiting
-- Environment variable configuration
-- CORS support for Flutter app integration
-- Swagger documentation
+- **Spam Detection**: Check if a text message is spam or not
+- **User Authentication**: Register, login, and manage your account
+- **History Tracking**: View your past spam checks (for authenticated users)
+- **Rate Limiting**: Guest users are limited to 10 requests per day
+- **API Documentation**: Interactive Swagger UI documentation
+- **Responsive Web UI**: Works on desktop and mobile devices
 
-## Setup
+## Demo
+
+A demo account is available for quick testing:
+- Username: `demo`
+- Password: `password123`
+
+Or use the "Demo Login" button on the login page.
+
+## API Usage
+
+### Authentication
+
+- **Guest access**: Limited to 10 requests per day
+- **Authenticated access**: Unlimited requests with history tracking
+
+Add the header: `Authorization: Bearer your-token` to your requests
+
+### Endpoints
+
+- `POST /api/check-spam`: Check if text is spam
+- `GET /api/history`: Get user's spam check history (requires authentication)
+- `GET /api/example/spam`: Get an example of spam detection for a typical spam message
+- `GET /api/example/ham`: Get an example of spam detection for a typical non-spam message
+- `POST /auth/register`: Register a new user
+- `POST /auth/login`: Login a user
+- `POST /auth/refresh`: Refresh access token
+- `GET /auth/profile`: Get user profile (requires authentication)
+- `GET /auth/demo-token`: Get a token for the demo user (for quick testing)
+
+## Web UI
+
+The web UI provides a user-friendly interface for the API:
+
+- **Home Page**: Information about the service
+- **Check Spam**: Test messages for spam
+- **History**: View your spam check history (requires authentication)
+- **Login/Register**: Create an account or login
+- **API Docs**: Interactive API documentation
+
+## Technologies Used
+
+- **Backend**: Flask, Flask-RESTx, SQLAlchemy, JWT
+- **Frontend**: HTML, CSS, JavaScript, Bootstrap
+- **Machine Learning**: Scikit-learn, NLTK
+- **Database**: SQLite (development), PostgreSQL (production)
+
+## Development Setup
 
 1. Clone the repository:
    ```
-   git clone https://github.com/loka1/spam_detection_api.git
-   cd spam_detection_api
+   git clone https://github.com/yourusername/spam-detection-api.git
+   cd spam-detection-api
    ```
 
-2. Create a virtual environment and activate it:
+2. Create a virtual environment:
    ```
-   python3.8 -m venv venv
+   python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
@@ -36,140 +76,56 @@ This project is available on GitHub: [https://github.com/loka1/spam_detection_ap
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file with the following content:
+4. Set up environment variables:
    ```
-   FLASK_APP=app.py
-   FLASK_ENV=development
-   FLASK_DEBUG=1
-   PORT=5000
-   SECRET_KEY=your-secret-key-change-in-production
-   JWT_SECRET_KEY=your-jwt-secret-key-change-in-production
-   DATABASE_URI=sqlite:///spam_detection.db
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
 
-5. Run the application:
+5. Initialize the database:
+   ```
+   flask db init
+   flask db migrate
+   flask db upgrade
+   ```
+
+6. Run the development server:
    ```
    flask run
    ```
 
-## API Documentation
-
-The API is documented using Swagger UI. Once the application is running, you can access the documentation at:
-
-```
-http://localhost:5000/docs
-```
-
-This provides an interactive interface to explore and test the API endpoints.
-
-## API Endpoints
-
-### Authentication
-
-- **Register**: `/auth/register` (POST)
-- **Login**: `/auth/login` (POST)
-- **Refresh Token**: `/auth/refresh` (POST)
-- **Get Profile**: `/auth/profile` (GET)
-
-### Spam Detection
-
-- **Check if the API is running**: `/` (GET)
-- **Check if text is spam**: `/api/check-spam` (POST)
-- **Get user history**: `/api/history` (GET)
-
-### Example Endpoints
-- **Spam Example**: `/api/example/spam` (GET)
-- **Ham Example**: `/api/example/ham` (GET)
-
-## Authentication
-
-The API supports both guest and authenticated access:
-
-### Guest Access
-- Limited to 10 requests per day
-- No history tracking
-
-### Authenticated Access
-- Unlimited requests
-- Request history tracking
-- Secure JWT authentication
-
-## Model
-
-The spam detection model is a simple Naive Bayes classifier trained on a small dataset. For production use, consider:
-
-1. Training on a larger, more diverse dataset
-2. Using more sophisticated models
-3. Regular retraining to adapt to new spam patterns
-
-## Flutter Integration
-
-To use this API in your Flutter app, make HTTP requests to the API endpoints. Example:
-
-```dart
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-// For guest access
-Future<bool> checkIfSpam(String text) async {
-  final response = await http.post(
-    Uri.parse('http://your-api-url/api/check-spam'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'text': text}),
-  );
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return data['is_spam'];
-  } else {
-    throw Exception('Failed to check spam');
-  }
-}
-
-// For authenticated access
-Future<bool> checkIfSpamAuthenticated(String text, String token) async {
-  final response = await http.post(
-    Uri.parse('http://your-api-url/api/check-spam'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
-    },
-    body: jsonEncode({'text': text}),
-  );
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    return data['is_spam'];
-  } else {
-    throw Exception('Failed to check spam');
-  }
-}
-
-// Login example
-Future<Map<String, dynamic>> login(String username, String password) async {
-  final response = await http.post(
-    Uri.parse('http://your-api-url/auth/login'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'username': username,
-      'password': password
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body);
-  } else {
-    throw Exception('Failed to login');
-  }
-}
-```
+7. Visit http://localhost:5000 in your browser
 
 ## Deployment
 
-For production deployment, consider:
+The application is ready for deployment on platforms like Heroku:
 
-1. Using Gunicorn as a WSGI server
-2. Setting up behind Nginx
-3. Deploying to a cloud platform like Heroku, AWS, or Google Cloud
-4. Using a production-grade database like PostgreSQL
-5. Setting secure values for SECRET_KEY and JWT_SECRET_KEY 
+1. Create a new Heroku app:
+   ```
+   heroku create your-app-name
+   ```
+
+2. Add PostgreSQL addon:
+   ```
+   heroku addons:create heroku-postgresql:hobby-dev
+   ```
+
+3. Set environment variables:
+   ```
+   heroku config:set SECRET_KEY=your-secret-key
+   heroku config:set JWT_SECRET_KEY=your-jwt-secret
+   ```
+
+4. Deploy the application:
+   ```
+   git push heroku main
+   ```
+
+5. Initialize the database:
+   ```
+   heroku run flask db upgrade
+   ```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 

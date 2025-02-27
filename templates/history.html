@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Spam Check History{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>Your Spam Check History</h2>
+                <button class="btn btn-primary" id="refresh-history">Refresh</button>
+            </div>
+            <div class="card-body">
+                <div id="history-loading" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading your history...</p>
+                </div>
+                <div id="history-empty" class="text-center py-5" style="display: none;">
+                    <p class="text-muted">You haven't checked any messages yet.</p>
+                    <a href="/check" class="btn btn-primary">Check a Message</a>
+                </div>
+                <div id="history-table-container" style="display: none;">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Text</th>
+                                    <th>Result</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <!-- History items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %} 

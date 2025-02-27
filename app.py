@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, url_for, redirect
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from dotenv import load_dotenv
@@ -12,6 +12,7 @@ from auth import init_app as init_auth
 from auth.routes import auth_ns
 from auth.utils import check_guest_limit
 from functools import wraps
+from routes import *  # Import route constants
 
 # Load environment variables
 load_dotenv()
@@ -26,6 +27,12 @@ init_db(app)
 
 # Initialize authentication
 init_auth(app)
+
+# Add a redirect from root to index
+@app.route('/')
+def root_redirect():
+    """Redirect from root to index page"""
+    return redirect(url_for('frontend_index'))
 
 # Initialize Flask-RESTx
 api = Api(
@@ -62,101 +69,135 @@ Add the header: `Authorization: Bearer your-token` to your requests
 ns = api.namespace('api', description='Spam detection operations')
 api.add_namespace(auth_ns, path='/auth')
 
+# Frontend routes - Make sure these are registered AFTER Flask-RESTx
+@app.route(ROUTE_INDEX, endpoint='frontend_index')
+def index():
+    return render_template('index.html')
+
+@app.route(ROUTE_CHECK, endpoint='frontend_check')
+def check_page():
+    return render_template('check.html')
+
+@app.route(ROUTE_LOGIN, endpoint='frontend_login')
+def login_page():
+    return render_template('login.html')
+
+@app.route(ROUTE_REGISTER, endpoint='frontend_register')
+def register_page():
+    return render_template('register.html')
+
+@app.route(ROUTE_HISTORY, endpoint='frontend_history')
+def history_page():
+    return render_template('history.html')
+
+# Add a route to get all API URLs for JavaScript
+@app.route('/api/urls', methods=['GET'])
+def api_urls():
+    """Return all API URLs for JavaScript to use"""
+    base_url = request.url_root.rstrip('/')
+    return jsonify({
+        'auth': {
+            'register': f"{base_url}/auth/register",
+            'login': f"{base_url}/auth/login",
+            'refresh': f"{base_url}/auth/refresh",
+            'profile': f"{base_url}/auth/profile",
+            'demo_token': f"{base_url}/auth/demo-token",
+        },
+        'api': {
+            'check_spam': f"{base_url}/api/check-spam",
+            'history': f"{base_url}/api/history",
+            'example_spam': f"{base_url}/api/example/spam",
+            'example_ham': f"{base_url}/api/example/ham",
+        },
+        'frontend': {
+            'root': f"{base_url}/",
+            'index': f"{base_url}/ui",
+            'check': f"{base_url}/check",
+            'login': f"{base_url}/login",
+            'register': f"{base_url}/register",
+            'history': f"{base_url}/history",
+        }
+    })
+
 # Define models for request and response
 spam_request = api.model('SpamRequest', {
     'text': fields.String(required=True, description='Text to check for spam')
 })
 
 spam_response = api.model('SpamResponse', {
-    'status': fields.String(description='Response status'),
+    'status': fields.String(description='Status of the request'),
     'is_spam': fields.Boolean(description='Whether the text is spam or not'),
-    'confidence': fields.Float(description='Confidence score of the prediction'),
-    'text': fields.String(description='The original text that was checked')
+    'confidence': fields.Float(description='Confidence score (0-1)'),
+    'text': fields.String(description='The text that was checked')
 })
 
-history_response = api.model('HistoryResponse', {
-    'id': fields.Integer(description='History ID'),
-    'text': fields.String(description='Text that was checked'),
-    'is_spam': fields.Boolean(description='Whether the text was spam or not'),
-    'confidence': fields.Float(description='Confidence score of the prediction'),
-    'timestamp': fields.String(description='When the request was made')
-})
-
-error_response = api.model('ErrorResponse', {
-    'status': fields.String(description='Error status'),
-    'message': fields.String(description='Error message')
-})
-
-# Initialize spam detector model
+# Initialize spam detector
 spam_detector = SpamDetector()
-spam_detector.load_model()
 
-# Custom decorator for optional JWT authentication
+# Define a decorator for optional JWT authentication
 def jwt_optional(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         try:
             verify_jwt_in_request()
-            kwargs['user_id'] = get_jwt_identity()
-        except:
-            kwargs['user_id'] = None
-        return fn(*args, **kwargs)
+            return fn(*args, **kwargs)
+        except Exception:
+            # Continue without authentication
+            return fn(*args, **kwargs)
     return wrapper
 
-# Root endpoint
-@api.route('/')
-class Home(Resource):
-    @api.doc(responses={200: 'Success'})
-    def get(self):
-        """Check if the API is running"""
-        return {
-            "status": "success",
-            "message": "Spam Detection API is running"
-        }
-
-# Spam detection endpoint
+# API endpoints
 @ns.route('/check-spam')
 class SpamCheck(Resource):
     @api.doc(
         responses={
             200: 'Success',
             400: 'Validation Error',
-            401: 'Unauthorized',
-            429: 'Too Many Requests',
-            500: 'Internal Server Error'
+            429: 'Rate limit exceeded'
         },
-        security=[{'apikey': []}]
+        security=[{'apikey': []}],
+        description="Check if text is spam. Guest users are limited to 10 requests per day. For unlimited access, register an account."
     )
     @api.expect(spam_request)
     @api.marshal_with(spam_response, code=200)
     @jwt_optional
-    def post(self, user_id=None):
-        """Check if the provided text is spam"""
+    def post(self):
+        """Check if text is spam"""
+        # Get request data
         data = request.get_json()
         
         if not data or 'text' not in data:
-            api.abort(400, "No text provided")
+            return {
+                "status": "error",
+                "message": "Missing required field: text"
+            }, 400
         
         text = data['text']
         
-        # Check if authenticated
-        if user_id is None:
-            # Guest user - check rate limit
+        # Check if user is authenticated
+        user_id = None
+        try:
+            user_id = get_jwt_identity()
+        except Exception:
+            # User is not authenticated, check guest limit
             if not check_guest_limit():
-                api.abort(429, "Rate limit exceeded. Please register for unlimited access.")
+                return {
+                    "status": "error",
+                    "message": "Rate limit exceeded. Please register for unlimited access."
+                }, 429
         
-        # Get prediction
+        # Predict if text is spam
         is_spam, confidence = spam_detector.predict(text)
         
-        # Save to history if authenticated
-        if user_id is not None:
-            history = RequestHistory(
+        # Save request to history if user is authenticated
+        if user_id:
+            history_entry = RequestHistory(
                 user_id=user_id,
                 text=text,
                 is_spam=is_spam,
                 confidence=confidence
             )
-            db.session.add(history)
+            db.session.add(history_entry)
             db.session.commit()
         
         return {
@@ -238,6 +279,18 @@ def server_error(e):
         "status": "error",
         "message": "Internal server error"
     }), 500
+
+@app.route('/debug/endpoints')
+def list_endpoints():
+    """List all registered endpoints"""
+    endpoints = []
+    for rule in app.url_map.iter_rules():
+        endpoints.append({
+            'endpoint': rule.endpoint,
+            'methods': list(rule.methods),
+            'path': str(rule)
+        })
+    return jsonify(endpoints)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

@@ -20,18 +20,30 @@ var/
 .installed.cfg
 *.egg
 
-# Environment variables
-.env
-
 # Virtual Environment
 venv/
 ENV/
 
-# IDE files
+# Flask
+instance/
+.webassets-cache
+
+# SQLite
+*.sqlite
+*.db
+
+# Environment Variables
+.env
+
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Model files (if they're large)
 # model/spam_classifier.pkl 
