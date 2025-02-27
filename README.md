@@ -1,6 +1,6 @@
 # Spam Detection API
 
-A Flask-based API that provides spam detection services for a Flutter application, with Swagger documentation.
+A Flask-based API that provides spam detection services for a Flutter application, with Swagger documentation and user authentication.
 
 ## Repository
 
@@ -10,6 +10,9 @@ This project is available on GitHub: [https://github.com/loka1/spam_detection_ap
 
 - RESTful API for spam detection
 - Simple machine learning model to classify text as spam or not
+- User authentication system
+- Request history tracking for authenticated users
+- Guest access with rate limiting
 - Environment variable configuration
 - CORS support for Flutter app integration
 - Swagger documentation
@@ -39,6 +42,9 @@ This project is available on GitHub: [https://github.com/loka1/spam_detection_ap
    FLASK_ENV=development
    FLASK_DEBUG=1
    PORT=5000
+   SECRET_KEY=your-secret-key-change-in-production
+   JWT_SECRET_KEY=your-jwt-secret-key-change-in-production
+   DATABASE_URI=sqlite:///spam_detection.db
    ```
 
 5. Run the application:
@@ -58,39 +64,35 @@ This provides an interactive interface to explore and test the API endpoints.
 
 ## API Endpoints
 
-### Check if the API is running
-- **URL**: `/`
-- **Method**: `GET`
-- **Response**:
-  ```json
-  {
-    "status": "success",
-    "message": "Spam Detection API is running"
-  }
-  ```
+### Authentication
 
-### Check if text is spam
-- **URL**: `/api/check-spam`
-- **Method**: `POST`
-- **Request Body**:
-  ```json
-  {
-    "text": "Your text to check for spam"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "status": "success",
-    "is_spam": true,
-    "confidence": 0.92,
-    "text": "Your text to check for spam"
-  }
-  ```
+- **Register**: `/auth/register` (POST)
+- **Login**: `/auth/login` (POST)
+- **Refresh Token**: `/auth/refresh` (POST)
+- **Get Profile**: `/auth/profile` (GET)
+
+### Spam Detection
+
+- **Check if the API is running**: `/` (GET)
+- **Check if text is spam**: `/api/check-spam` (POST)
+- **Get user history**: `/api/history` (GET)
 
 ### Example Endpoints
 - **Spam Example**: `/api/example/spam` (GET)
 - **Ham Example**: `/api/example/ham` (GET)
+
+## Authentication
+
+The API supports both guest and authenticated access:
+
+### Guest Access
+- Limited to 10 requests per day
+- No history tracking
+
+### Authenticated Access
+- Unlimited requests
+- Request history tracking
+- Secure JWT authentication
 
 ## Model
 
@@ -108,6 +110,7 @@ To use this API in your Flutter app, make HTTP requests to the API endpoints. Ex
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// For guest access
 Future<bool> checkIfSpam(String text) async {
   final response = await http.post(
     Uri.parse('http://your-api-url/api/check-spam'),
@@ -122,6 +125,43 @@ Future<bool> checkIfSpam(String text) async {
     throw Exception('Failed to check spam');
   }
 }
+
+// For authenticated access
+Future<bool> checkIfSpamAuthenticated(String text, String token) async {
+  final response = await http.post(
+    Uri.parse('http://your-api-url/api/check-spam'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    },
+    body: jsonEncode({'text': text}),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return data['is_spam'];
+  } else {
+    throw Exception('Failed to check spam');
+  }
+}
+
+// Login example
+Future<Map<String, dynamic>> login(String username, String password) async {
+  final response = await http.post(
+    Uri.parse('http://your-api-url/auth/login'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'username': username,
+      'password': password
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to login');
+  }
+}
 ```
 
 ## Deployment
@@ -130,4 +170,6 @@ For production deployment, consider:
 
 1. Using Gunicorn as a WSGI server
 2. Setting up behind Nginx
-3. Deploying to a cloud platform like Heroku, AWS, or Google Cloud 
+3. Deploying to a cloud platform like Heroku, AWS, or Google Cloud
+4. Using a production-grade database like PostgreSQL
+5. Setting secure values for SECRET_KEY and JWT_SECRET_KEY 

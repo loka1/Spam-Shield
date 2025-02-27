@@ -1,28 +1,66 @@
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_jwt_extended import jwt_required, get_jwt_identity, verify_jwt_in_request
 from dotenv import load_dotenv
-from model.spam_model import SpamDetector
+from config import Config
+from models.spam_model import SpamDetector
 from flask_restx import Api, Resource, fields
+from database.models import db, User, RequestHistory
+from database import init_app as init_db
+from auth import init_app as init_auth
+from auth.routes import auth_ns
+from auth.utils import check_guest_limit
+from functools import wraps
 
 # Load environment variables
 load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
+app.config.from_object(Config)
 CORS(app)  # Enable CORS for all routes
+
+# Initialize database
+init_db(app)
+
+# Initialize authentication
+init_auth(app)
 
 # Initialize Flask-RESTx
 api = Api(
     app,
     version='1.0',
     title='Spam Detection API',
-    description='A simple API for detecting spam text for Flutter applications',
-    doc='/docs'
+    description='''A simple API for detecting spam text for Flutter applications.
+    
+## Authentication
+- **Guest access**: Limited to 10 requests per day
+- **Authenticated access**: Unlimited requests with history tracking
+
+### Demo User
+For quick testing, you can:
+1. Get a demo token at `/auth/demo-token`
+2. Or login with: username=`demo`, password=`password123`
+
+### Using Authentication
+Add the header: `Authorization: Bearer your-token` to your requests
+''',
+    doc='/docs',
+    authorizations={
+        'apikey': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': "Type in the *'Value'* input box below: **Bearer &lt;JWT&gt;**"
+        }
+    },
+    security='apikey'
 )
 
 # Create namespaces
 ns = api.namespace('api', description='Spam detection operations')
+api.add_namespace(auth_ns, path='/auth')
 
 # Define models for request and response
 spam_request = api.model('SpamRequest', {
@@ -36,6 +74,14 @@ spam_response = api.model('SpamResponse', {
     'text': fields.String(description='The original text that was checked')
 })
 
+history_response = api.model('HistoryResponse', {
+    'id': fields.Integer(description='History ID'),
+    'text': fields.String(description='Text that was checked'),
+    'is_spam': fields.Boolean(description='Whether the text was spam or not'),
+    'confidence': fields.Float(description='Confidence score of the prediction'),
+    'timestamp': fields.String(description='When the request was made')
+})
+
 error_response = api.model('ErrorResponse', {
     'status': fields.String(description='Error status'),
     'message': fields.String(description='Error message')
@@ -44,6 +90,18 @@ error_response = api.model('ErrorResponse', {
 # Initialize spam detector model
 spam_detector = SpamDetector()
 spam_detector.load_model()
+
+# Custom decorator for optional JWT authentication
+def jwt_optional(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            verify_jwt_in_request()
+            kwargs['user_id'] = get_jwt_identity()
+        except:
+            kwargs['user_id'] = None
+        return fn(*args, **kwargs)
+    return wrapper
 
 # Root endpoint
 @api.route('/')
@@ -59,14 +117,20 @@ class Home(Resource):
 # Spam detection endpoint
 @ns.route('/check-spam')
 class SpamCheck(Resource):
-    @api.doc(responses={
-        200: 'Success',
-        400: 'Validation Error',
-        500: 'Internal Server Error'
-    })
+    @api.doc(
+        responses={
+            200: 'Success',
+            400: 'Validation Error',
+            401: 'Unauthorized',
+            429: 'Too Many Requests',
+            500: 'Internal Server Error'
+        },
+        security=[{'apikey': []}]
+    )
     @api.expect(spam_request)
     @api.marshal_with(spam_response, code=200)
-    def post(self):
+    @jwt_optional
+    def post(self, user_id=None):
         """Check if the provided text is spam"""
         data = request.get_json()
         
@@ -75,14 +139,56 @@ class SpamCheck(Resource):
         
         text = data['text']
         
+        # Check if authenticated
+        if user_id is None:
+            # Guest user - check rate limit
+            if not check_guest_limit():
+                api.abort(429, "Rate limit exceeded. Please register for unlimited access.")
+        
         # Get prediction
         is_spam, confidence = spam_detector.predict(text)
+        
+        # Save to history if authenticated
+        if user_id is not None:
+            history = RequestHistory(
+                user_id=user_id,
+                text=text,
+                is_spam=is_spam,
+                confidence=confidence
+            )
+            db.session.add(history)
+            db.session.commit()
         
         return {
             "status": "success",
             "is_spam": bool(is_spam),
             "confidence": float(confidence),
             "text": text
+        }
+
+# User history endpoint
+@ns.route('/history')
+class UserHistory(Resource):
+    @api.doc(
+        responses={
+            200: 'Success',
+            401: 'Unauthorized',
+            500: 'Internal Server Error'
+        },
+        security=[{'apikey': []}],
+        description="Get the user's spam check history. Requires authentication. For testing, get a demo token at /auth/demo-token"
+    )
+    @jwt_required()
+    def get(self):
+        """Get user's spam check history (requires authentication)"""
+        user_id = get_jwt_identity()
+        
+        # Get user history
+        history = RequestHistory.query.filter_by(user_id=user_id).order_by(RequestHistory.timestamp.desc()).all()
+        
+        return {
+            "status": "success",
+            "history": [item.to_dict() for item in history]
         }
 
 # Example endpoints
