@@ -3,7 +3,8 @@
 {% block title %}Email Spam Detection API{% endblock %}
 
 {% block content %}
-<div class="row align-items-center">
+<!-- Hero Section -->
+<div class="row align-items-center hero-section mb-5">
     <div class="col-lg-6">
         <div class="text-center text-lg-start mb-4">
             <h1 class="display-4 fw-bold text-primary mb-3">
@@ -23,39 +24,6 @@
                 </a>
             </div>
         </div>
-
-        <div class="features mt-5">
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="feature-card p-4 rounded bg-light">
-                        <i class="bi bi-lightning-charge text-primary display-5"></i>
-                        <h3 class="h5 mt-3">Fast & Accurate</h3>
-                        <p class="text-muted mb-0">Advanced ML algorithms provide quick and reliable results.</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="feature-card p-4 rounded bg-light">
-                        <i class="bi bi-shield-lock text-primary display-5"></i>
-                        <h3 class="h5 mt-3">Secure & Private</h3>
-                        <p class="text-muted mb-0">Your data is encrypted and never stored without permission.</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="feature-card p-4 rounded bg-light">
-                        <i class="bi bi-graph-up text-primary display-5"></i>
-                        <h3 class="h5 mt-3">Track History</h3>
-                        <p class="text-muted mb-0">Monitor your spam detection history and patterns.</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="feature-card p-4 rounded bg-light">
-                        <i class="bi bi-code-slash text-primary display-5"></i>
-                        <h3 class="h5 mt-3">API Access</h3>
-                        <p class="text-muted mb-0">Integrate with our API for automated detection.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="col-lg-6 d-none d-lg-block">
         <div class="p-4 text-center">
@@ -67,15 +35,125 @@
     </div>
 </div>
 
-<div class="row mt-5">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <h2>Ready to try it out?</h2>
-                    <p class="lead text-muted">Check if an email is spam or legitimate with our detection tool.</p>
-                    <a href="{{ url_for('frontend_check') }}" class="btn btn-primary btn-lg">
+<!-- Features Section -->
+<div class="features-section mb-5">
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold">Why Choose Spam Shield?</h2>
+        <p class="lead text-muted">Powerful features to keep your inbox clean</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-card p-4 rounded bg-light h-100">
+                <i class="bi bi-lightning-charge text-primary display-5"></i>
+                <h3 class="h5 mt-3">Fast & Accurate</h3>
+                <p class="text-muted mb-0">Advanced ML algorithms provide quick and reliable results.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-card p-4 rounded bg-light h-100">
+                <i class="bi bi-shield-lock text-primary display-5"></i>
+                <h3 class="h5 mt-3">Secure & Private</h3>
+                <p class="text-muted mb-0">Your data is encrypted and never stored without permission.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-card p-4 rounded bg-light h-100">
+                <i class="bi bi-graph-up text-primary display-5"></i>
+                <h3 class="h5 mt-3">Track History</h3>
+                <p class="text-muted mb-0">Monitor your spam detection history and patterns.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="feature-card p-4 rounded bg-light h-100">
+                <i class="bi bi-code-slash text-primary display-5"></i>
+                <h3 class="h5 mt-3">API Access</h3>
+                <p class="text-muted mb-0">Integrate with our API for automated detection.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="how-it-works-section mb-5">
+    <div class="card shadow-sm">
+        <div class="card-body p-5">
+            <div class="text-center mb-5">
+                <h2 class="display-6 fw-bold">How It Works</h2>
+                <p class="lead text-muted">Simple steps to detect spam emails</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="step-circle mb-3">1</div>
+                        <h4>Paste Email</h4>
+                        <p class="text-muted">Copy and paste the suspicious email content into our checker.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="step-circle mb-3">2</div>
+                        <h4>Analyze</h4>
+                        <p class="text-muted">Our ML model analyzes the content for spam indicators.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <div class="step-circle mb-3">3</div>
+                        <h4>Get Results</h4>
+                        <p class="text-muted">Receive instant results with confidence scores and explanations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section mb-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body p-4">
+                    <i class="bi bi-envelope-check display-4 text-primary mb-3"></i>
+                    <h3 class="counter" id="stats-checks">100,000+</h3>
+                    <p class="text-muted">Emails Analyzed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body p-4">
+                    <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
+                    <h3 class="counter" id="stats-accuracy">99.9%</h3>
+                    <p class="text-muted">Accuracy Rate</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body p-4">
+                    <i class="bi bi-people display-4 text-primary mb-3"></i>
+                    <h3 class="counter" id="stats-users">50,000+</h3>
+                    <p class="text-muted">Happy Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section">
+    <div class="card shadow-sm bg-primary text-white">
+        <div class="card-body p-5">
+            <div class="text-center">
+                <h2 class="display-6 fw-bold mb-3">Ready to try it out?</h2>
+                <p class="lead mb-4">Check if an email is spam or legitimate with our detection tool.</p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('frontend_check') }}" class="btn btn-light btn-lg px-4">
                         <i class="bi bi-search"></i> Check Email Now
+                    </a>
+                    <a href="{{ url_for('frontend_register') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-person-plus"></i> Sign Up Free
                     </a>
                 </div>
             </div>
