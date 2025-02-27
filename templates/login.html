@@ -7,12 +7,12 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                <h2>Login</h2>
+                <h2 class="text-center">Login</h2>
             </div>
             <div class="card-body">
                 <form id="login-form">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username or Email</label>
+                        <label for="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username" required>
                     </div>
                     <div class="mb-3">
@@ -21,12 +21,13 @@
                     </div>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Login</button>
-                        <button type="button" class="btn btn-success" id="demo-login-btn">Use Demo Account</button>
+                        <button type="button" id="demo-login-btn" class="btn btn-success">Demo Login</button>
+                        <button type="button" id="demo-admin-login-btn" class="btn btn-danger">Demo Admin Login</button>
                     </div>
                 </form>
             </div>
             <div class="card-footer text-center">
-                <p class="mb-0">Don't have an account? <a href="/register">Register</a></p>
+                <p class="mb-0">Don't have an account? <a href="{{ url_for('frontend_register') }}">Register</a></p>
             </div>
         </div>
     </div>

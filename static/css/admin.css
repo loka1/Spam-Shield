@@ -1,0 +1,88 @@
+/* Admin Panel Styles */
+
+/* Sidebar */
+.admin-sidebar {
+    background-color: #343a40;
+    min-height: calc(100vh - 56px);
+}
+
+.admin-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.admin-sidebar .nav-link:hover {
+    color: #fff;
+}
+
+.admin-sidebar .nav-link.active {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Tables */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+/* Text truncation */
+.text-truncate {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+}
+
+/* Alerts */
+#admin-alert-container {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1050;
+    width: 350px;
+}
+
+#admin-alert-container .alert {
+    margin-bottom: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* Pagination controls */
+#pagination-controls {
+    margin-top: 1rem;
+}
+
+/* Modal styles */
+.modal-header {
+    background-color: #f8f9fa;
+}
+
+/* Chart containers */
+canvas {
+    max-width: 100%;
+} 

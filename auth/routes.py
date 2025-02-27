@@ -165,4 +165,30 @@ class DemoToken(Resource):
             'refresh_token': refresh_token,
             'user': demo_user.to_dict(),
             'usage': 'Add this header to your requests: Authorization: Bearer ' + access_token
-        }, 200 
+        }, 200
+
+@auth_ns.route('/demo-admin-token')
+class DemoAdminToken(Resource):
+    """Get a token for the demo admin user (for quick testing)"""
+    
+    def get(self):
+        """Get a token for the demo admin user"""
+        # Find the demo admin user
+        demo_admin = User.query.filter_by(username='demoadmin').first()
+        
+        if not demo_admin:
+            return {
+                'status': 'error',
+                'message': 'Demo admin user not found'
+            }, 404
+        
+        # Generate tokens
+        access_token, refresh_token = generate_tokens(demo_admin.id)
+        
+        return {
+            'status': 'success',
+            'message': 'Demo admin login successful',
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user': demo_admin.to_dict()
+        } 

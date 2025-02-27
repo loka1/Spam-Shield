@@ -15,6 +15,7 @@ async function checkAuthStatus() {
     const userInfo = document.getElementById('user-info');
     const authButtons = document.getElementById('auth-buttons');
     const historyNav = document.getElementById('history-nav');
+    const adminNav = document.getElementById('admin-nav');
     
     if (token) {
         // User is logged in
@@ -41,6 +42,11 @@ async function checkAuthStatus() {
             if (authButtons) authButtons.style.display = 'none';
             if (historyNav) historyNav.style.display = 'block';
             
+            // Show admin link if user is admin
+            if (adminNav) {
+                adminNav.style.display = data.user.is_admin ? 'block' : 'none';
+            }
+            
             // Display username
             const usernameDisplay = document.getElementById('username-display');
             if (usernameDisplay) {
@@ -55,12 +61,14 @@ async function checkAuthStatus() {
             if (userInfo) userInfo.style.display = 'none';
             if (authButtons) authButtons.style.display = 'flex';
             if (historyNav) historyNav.style.display = 'none';
+            if (adminNav) adminNav.style.display = 'none';
         }
     } else {
         // User is not logged in
         if (userInfo) userInfo.style.display = 'none';
         if (authButtons) authButtons.style.display = 'flex';
         if (historyNav) historyNav.style.display = 'none';
+        if (adminNav) adminNav.style.display = 'none';
     }
 }
 

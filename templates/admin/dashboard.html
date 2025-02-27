@@ -1,0 +1,116 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2 class="card-text" id="total-users">Loading...</h2>
+                    <p class="card-text"><small>Registered users in the system</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Requests</h5>
+                    <h2 class="card-text" id="total-requests">Loading...</h2>
+                    <p class="card-text"><small>API requests processed</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Spam Detection Rate</h5>
+                    <h2 class="card-text" id="spam-rate">Loading...</h2>
+                    <p class="card-text"><small>Percentage of spam detected</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Users</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-users">
+                                <tr>
+                                    <td colspan="3" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-primary">View All Users</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Requests</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Text</th>
+                                    <th>Result</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-requests">
+                                <tr>
+                                    <td colspan="4" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="{{ url_for('admin_requests') }}" class="btn btn-primary">View All Requests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>API Usage Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="api-usage-chart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/admin/dashboard.js') }}"></script>
+{% endblock %} 

@@ -3,6 +3,8 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from datetime import datetime, timedelta
 from database.models import User, GuestRequest, db
 import ipaddress
+from functools import wraps
+from flask import jsonify
 
 def get_client_ip():
     """Get the client's IP address from the request"""
@@ -52,4 +54,24 @@ def generate_tokens(user_id):
     """Generate access and refresh tokens for a user"""
     access_token = create_access_token(identity=user_id)
     refresh_token = create_refresh_token(identity=user_id)
-    return access_token, refresh_token 
+    return access_token, refresh_token
+
+def admin_required():
+    """
+    Decorator to restrict access to admin users
+    """
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args, **kwargs):
+            current_user_id = get_jwt_identity()
+            user = User.query.get(current_user_id)
+            
+            if not user or not user.is_admin:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Admin access required'
+                }), 403
+                
+            return fn(*args, **kwargs)
+        return decorator
+    return wrapper 

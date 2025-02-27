@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %} - Spam Detection API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_requests') }}">Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_stats') }}">Statistics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('frontend_index') }}">Back to Site</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <span class="navbar-text me-3" id="admin-username"></span>
+                    <button class="btn btn-outline-light" id="admin-logout-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="admin-alert-container" class="container mt-3"></div>
+    
+    {% block content %}{% endblock %}
+
+    <footer class="footer mt-5 py-3 bg-dark text-white">
+        <div class="container text-center">
+            <span>Admin Panel - Spam Detection API &copy; 2025</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/api-urls.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin/auth.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

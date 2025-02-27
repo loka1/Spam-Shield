@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('login-form');
     const demoLoginBtn = document.getElementById('demo-login-btn');
+    const demoAdminLoginBtn = document.getElementById('demo-admin-login-btn');
     
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
@@ -10,14 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
         demoLoginBtn.addEventListener('click', handleDemoLogin);
     }
     
+    if (demoAdminLoginBtn) {
+        demoAdminLoginBtn.addEventListener('click', handleDemoAdminLogin);
+    }
+    
     // Redirect if already logged in
     if (localStorage.getItem('access_token')) {
         window.location.href = '/';
     }
 });
 
-async function handleLogin(e) {
-    e.preventDefault();
+async function handleLogin(event) {
+    event.preventDefault();
     
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -39,14 +44,14 @@ async function handleLogin(e) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                password: password
+                username,
+                password
             })
         });
         
         const data = await response.json();
         
-        if (data.access_token) {
+        if (response.ok) {
             // Store tokens
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('refresh_token', data.refresh_token);
@@ -72,13 +77,13 @@ async function handleDemoLogin() {
         const response = await fetch(demoTokenUrl);
         const data = await response.json();
         
-        if (data.access_token) {
+        if (response.ok) {
             // Store tokens
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('refresh_token', data.refresh_token);
             localStorage.setItem('user', JSON.stringify(data.user));
             
-            // Redirect to home page
+            // Redirect to root, which will redirect to index
             window.location.href = '/';
         } else {
             showAlert(data.message || 'Demo login failed', 'danger');
@@ -86,5 +91,29 @@ async function handleDemoLogin() {
     } catch (error) {
         console.error('Demo login error:', error);
         showAlert('An error occurred during demo login', 'danger');
+    }
+}
+
+async function handleDemoAdminLogin() {
+    try {
+        const demoAdminTokenUrl = await getApiUrl('auth', 'demo_admin_token');
+        const response = await fetch(demoAdminTokenUrl);
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Store tokens
+            localStorage.setItem('access_token', data.access_token);
+            localStorage.setItem('refresh_token', data.refresh_token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            // Redirect to admin dashboard
+            window.location.href = '/admin/dashboard';
+        } else {
+            showAlert(data.message || 'Demo admin login failed', 'danger');
+        }
+    } catch (error) {
+        console.error('Demo admin login error:', error);
+        showAlert('An error occurred during demo admin login', 'danger');
     }
 } 

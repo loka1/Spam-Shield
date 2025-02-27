@@ -1,0 +1,84 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Request History{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Request History</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">All Requests</h5>
+            <div>
+                <button id="refresh-btn" class="btn btn-outline-primary me-2">Refresh</button>
+                <button id="export-csv-btn" class="btn btn-outline-success">Export CSV</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="filter-user" class="form-label">Filter by User</label>
+                        <select class="form-select" id="filter-user">
+                            <option value="">All Users</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="filter-result" class="form-label">Filter by Result</label>
+                        <select class="form-select" id="filter-result">
+                            <option value="">All Results</option>
+                            <option value="spam">Spam</option>
+                            <option value="ham">Not Spam</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="filter-date-from" class="form-label">From Date</label>
+                        <input type="date" class="form-control" id="filter-date-from">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="filter-date-to" class="form-label">To Date</label>
+                        <input type="date" class="form-control" id="filter-date-to">
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <button id="apply-filters-btn" class="btn btn-primary">Apply Filters</button>
+                    <button id="clear-filters-btn" class="btn btn-outline-secondary">Clear Filters</button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Text</th>
+                            <th>Result</th>
+                            <th>Confidence</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-table-body">
+                        <tr>
+                            <td colspan="6" class="text-center">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="pagination-controls" class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                    <span>Showing <span id="showing-start">0</span>-<span id="showing-end">0</span> of <span id="total-count">0</span> requests</span>
+                </div>
+                <div>
+                    <button id="prev-page" class="btn btn-sm btn-outline-primary me-2">Previous</button>
+                    <button id="next-page" class="btn btn-sm btn-outline-primary">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin/requests.js') }}"></script>
+{% endblock %} 

@@ -9,9 +9,9 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('frontend_index') }}">Spam Detection</a>
+            <a class="navbar-brand" href="{{ url_for('frontend_index') }}">Spam Detection API</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -26,8 +26,11 @@
                     <li class="nav-item" id="history-nav" style="display: none;">
                         <a class="nav-link" href="{{ url_for('frontend_history') }}">History</a>
                     </li>
+                    <li class="nav-item" id="admin-nav" style="display: none;">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/docs" target="_blank">API Docs</a>
+                        <a class="nav-link" href="/docs">API Docs</a>
                     </li>
                 </ul>
                 <div class="d-flex" id="auth-buttons">
@@ -49,7 +52,7 @@
 
     <footer class="footer mt-5 py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">Spam Detection API &copy; 2023</span>
+            <span class="text-muted">Spam Detection API &copy; 2025</span>
         </div>
     </footer>
 

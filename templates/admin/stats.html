@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Statistics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Statistics</h1>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>API Usage Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="api-usage-chart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Spam vs. Ham Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="spam-distribution-chart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>User Registration Over Time</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="user-registration-chart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Confidence Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="confidence-distribution-chart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Top Spam Patterns</h5>
+                    <button id="refresh-patterns-btn" class="btn btn-sm btn-outline-primary">Refresh</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Pattern</th>
+                                    <th>Occurrences</th>
+                                    <th>Avg. Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patterns-table-body">
+                                <tr>
+                                    <td colspan="3" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/admin/stats.js') }}"></script>
+{% endblock %} 
