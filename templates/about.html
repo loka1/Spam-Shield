@@ -3,94 +3,90 @@
 {% block title %}About Us{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="text-center mb-4">About Us</h1>
-            
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Our Project</h2>
-                    <p class="card-text">
-                        This project is a final year graduation project focused on email spam detection using machine learning. 
-                        Our system helps users identify potentially harmful or unwanted emails by analyzing the text content 
-                        and determining whether it's likely to be spam or legitimate (ham).
-                    </p>
-                    <p class="card-text">
-                        We've built this application using modern web technologies and machine learning techniques to provide 
-                        an accurate, fast, and user-friendly spam detection service that can be integrated with various email systems.
-                    </p>
-                </div>
+<div class="row justify-content-center">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-4">
+            <i class="bi bi-info-circle display-1 text-primary"></i>
+            <h1 class="mt-3">About Us</h1>
+            <p class="text-muted">Protecting your inbox with advanced spam detection</p>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title d-flex align-items-center">
+                    <i class="bi bi-lightbulb text-primary me-2"></i>
+                    Our Project
+                </h2>
+                <p class="card-text">
+                    This project is a final year graduation project focused on email spam detection using machine learning. 
+                    Our system helps users identify potentially harmful or unwanted emails by analyzing the text content 
+                    and determining whether it's likely to be spam or legitimate (ham).
+                </p>
+                <p class="card-text">
+                    We've built this application using modern web technologies and machine learning techniques to provide 
+                    an accurate, fast, and user-friendly spam detection service that can be integrated with various email systems.
+                </p>
             </div>
-            
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Our Team</h2>
-                    <p class="card-text">
-                        We are a team of passionate computer science students who developed this project as part of our 
-                        final year graduation requirements. Our team members have expertise in machine learning, web development, 
-                        and data analysis.
-                    </p>
-                    <div class="row mt-4">
-                        <div class="col-md-4 text-center mb-3">
-                            <div class="bg-light p-3 rounded">
-                                <h5>Team Member 1</h5>
-                                <p class="text-muted">ML Engineer</p>
-                            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title d-flex align-items-center">
+                    <i class="bi bi-people text-primary me-2"></i>
+                    Our Team
+                </h2>
+                <div class="row g-4 mt-2">
+                    <div class="col-md-6">
+                        <div class="team-member text-center p-3 rounded bg-light">
+                            <i class="bi bi-person-circle display-4 text-primary"></i>
+                            <h5 class="mt-3">Dr. Ahmed</h5>
+                            <p class="text-muted mb-2">Project Supervisor</p>
+                            <p>For his guidance and support throughout the development process.</p>
                         </div>
-                        <div class="col-md-4 text-center mb-3">
-                            <div class="bg-light p-3 rounded">
-                                <h5>Team Member 2</h5>
-                                <p class="text-muted">Backend Developer</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center mb-3">
-                            <div class="bg-light p-3 rounded">
-                                <h5>Team Member 3</h5>
-                                <p class="text-muted">Frontend Developer</p>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="team-member text-center p-3 rounded bg-light">
+                            <i class="bi bi-person-circle display-4 text-primary"></i>
+                            <h5 class="mt-3">Dr. Reham</h5>
+                            <p class="text-muted mb-2">Project Co-Supervisor</p>
+                            <p>For her insightful feedback and technical expertise.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">Special Thanks</h2>
-                    <p class="card-text">
-                        We would like to express our sincere gratitude to our project supervisors who guided us throughout 
-                        the development of this project:
-                    </p>
-                    <div class="row mt-4">
-                        <div class="col-md-6 text-center mb-3">
-                            <div class="bg-light p-3 rounded">
-                                <h5>Dr. Amira</h5>
-                                <p class="text-muted">Project Supervisor</p>
-                                <p>For her invaluable guidance, expertise, and continuous support throughout our project journey.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6 text-center mb-3">
-                            <div class="bg-light p-3 rounded">
-                                <h5>Dr. Reham</h5>
-                                <p class="text-muted">Project Co-Supervisor</p>
-                                <p>For her insightful feedback, technical expertise, and encouragement that helped shape our project.</p>
-                            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title d-flex align-items-center">
+                    <i class="bi bi-code-slash text-primary me-2"></i>
+                    Technology Stack
+                </h2>
+                <div class="row g-4 mt-2">
+                    <div class="col-md-6">
+                        <div class="tech-stack p-3 rounded bg-light">
+                            <h5 class="d-flex align-items-center">
+                                <i class="bi bi-server text-primary me-2"></i> Backend
+                            </h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><i class="bi bi-check2 text-success"></i> Flask & Flask-RESTx</li>
+                                <li><i class="bi bi-check2 text-success"></i> SQLAlchemy</li>
+                                <li><i class="bi bi-check2 text-success"></i> JWT Authentication</li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title">Technology Stack</h2>
-                    <p class="card-text">Our project utilizes the following technologies:</p>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Backend:</strong> Flask, Flask-RESTx, SQLAlchemy, JWT</li>
-                        <li class="list-group-item"><strong>Frontend:</strong> HTML, CSS, JavaScript, Bootstrap, Chart.js</li>
-                        <li class="list-group-item"><strong>Machine Learning:</strong> Scikit-learn, NLTK, TF-IDF</li>
-                        <li class="list-group-item"><strong>Database:</strong> SQLite (development), PostgreSQL (production)</li>
-                        <li class="list-group-item"><strong>Deployment:</strong> Heroku, Docker</li>
-                    </ul>
+                    <div class="col-md-6">
+                        <div class="tech-stack p-3 rounded bg-light">
+                            <h5 class="d-flex align-items-center">
+                                <i class="bi bi-window text-primary me-2"></i> Frontend
+                            </h5>
+                            <ul class="list-unstyled mb-0">
+                                <li><i class="bi bi-check2 text-success"></i> HTML & CSS</li>
+                                <li><i class="bi bi-check2 text-success"></i> JavaScript</li>
+                                <li><i class="bi bi-check2 text-success"></i> Bootstrap 5</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

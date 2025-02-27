@@ -272,4 +272,63 @@ a.text-primary {
 
 a.text-primary:hover {
     text-decoration: underline;
+}
+
+/* Check page specific styles */
+textarea.form-control-lg {
+    min-height: 200px;
+}
+
+.progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 15px;
+}
+
+.modal-header, .modal-footer {
+    background-color: transparent;
+}
+
+/* About page specific styles */
+.team-member {
+    transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.tech-stack {
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.tech-stack:hover {
+    transform: translateY(-5px);
+}
+
+.tech-stack ul li {
+    margin-bottom: 0.5rem;
+}
+
+.tech-stack ul li:last-child {
+    margin-bottom: 0;
+}
+
+.tech-stack i.bi-check2 {
+    margin-right: 0.5rem;
+}
+
+/* Common hover effects */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 } 
