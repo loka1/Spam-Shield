@@ -51,8 +51,9 @@ Add the header: `Authorization: Bearer your-token` to your requests
 The web UI provides a user-friendly interface for the API:
 
 - **Home Page**: Information about the service
-- **Check Spam**: Test messages for spam
+- **Check Spam**: Test emails for spam content
 - **History**: View your spam check history (requires authentication)
+- **About Us**: Information about the project and team
 - **Login/Register**: Create an account or login
 - **API Docs**: Interactive API documentation
 

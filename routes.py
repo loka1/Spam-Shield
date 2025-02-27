@@ -9,6 +9,7 @@ ROUTE_CHECK = '/check'
 ROUTE_LOGIN = '/login'
 ROUTE_REGISTER = '/register'
 ROUTE_HISTORY = '/history'
+ROUTE_ABOUT = '/about'
 
 # API routes
 API_CHECK_SPAM = '/api/check-spam'

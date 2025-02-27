@@ -1,66 +1,128 @@
 {% extends "base.html" %}
 
-{% block title %}Spam Detection API - Home{% endblock %}
+{% block title %}Email Spam Detection API{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body text-center">
-                <h1 class="card-title">Welcome to Spam Detection API</h1>
-                <p class="card-text">
-                    This service helps you identify spam messages using machine learning.
-                </p>
-                <div class="mt-4">
-                    <a href="/check" class="btn btn-primary btn-lg">Check for Spam</a>
-                    <a href="/docs" class="btn btn-outline-secondary btn-lg ms-2" target="_blank">API Documentation</a>
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 mb-4">Email Spam Detection</h1>
+            <p class="lead mb-4">
+                Protect yourself from unwanted and potentially harmful emails with our advanced machine learning-powered spam detection service.
+            </p>
+            <p class="mb-4">
+                Our system analyzes email content to determine whether it's legitimate or spam, helping you filter out unwanted messages and stay safe online.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4">
+                <a href="{{ url_for('frontend_check') }}" class="btn btn-primary btn-lg px-4 me-md-2">Try It Now</a>
+                <a href="/docs" class="btn btn-outline-secondary btn-lg px-4">API Docs</a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-4">Features</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-2 me-3 text-white">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Advanced Detection</h5>
+                                <p class="mb-0 text-muted">Machine learning algorithms trained on thousands of emails</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-2 me-3 text-white">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">History Tracking</h5>
+                                <p class="mb-0 text-muted">Keep track of all your spam checks</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-2 me-3 text-white">
+                                <i class="bi bi-code-slash"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">API Access</h5>
+                                <p class="mb-0 text-muted">Integrate with your applications via our REST API</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-2 me-3 text-white">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Confidence Scores</h5>
+                                <p class="mb-0 text-muted">Get detailed confidence levels for each prediction</p>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="card mt-4">
-            <div class="card-header">
-                <h3>Features</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">Spam Detection</h5>
-                                <p class="card-text">Check if a message is spam with our machine learning model.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">User Accounts</h5>
-                                <p class="card-text">Register to get unlimited access and track your history.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">API Access</h5>
-                                <p class="card-text">Integrate with our API for your applications.</p>
-                            </div>
-                        </div>
-                    </div>
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">How It Works</h3>
+                    <p class="card-text">
+                        Our system uses machine learning algorithms trained on thousands of emails to identify patterns and characteristics commonly found in spam messages.
+                    </p>
+                    <p class="card-text">
+                        When you submit an email for analysis, our model evaluates its content and provides a prediction along with a confidence score.
+                    </p>
                 </div>
             </div>
         </div>
-
-        <div class="card mt-4">
-            <div class="card-header">
-                <h3>How It Works</h3>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Getting Started</h3>
+                    <p class="card-text">
+                        To get started, simply paste the content of an email into our checker tool and click "Check for Spam".
+                    </p>
+                    <p class="card-text">
+                        For more advanced features like history tracking and unlimited checks, create a free account or use our API.
+                    </p>
+                    <a href="{{ url_for('frontend_register') }}" class="btn btn-outline-primary mt-2">Create Account</a>
+                </div>
             </div>
-            <div class="card-body">
-                <p>Our spam detection system uses a machine learning model trained on a dataset of spam and non-spam (ham) messages. The model analyzes the text content and provides a prediction along with a confidence score.</p>
-                <p>For best results, provide the complete message you want to check.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">For Developers</h3>
+                    <p class="card-text">
+                        Integrate our spam detection capabilities into your own applications with our easy-to-use REST API.
+                    </p>
+                    <p class="card-text">
+                        Check out our comprehensive API documentation to get started with implementation.
+                    </p>
+                    <a href="/docs" class="btn btn-outline-primary mt-2">View API Docs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body p-4 text-center">
+                    <h3 class="mb-3">Ready to try it out?</h3>
+                    <p class="lead mb-4">Check if an email is spam or legitimate with our detection tool.</p>
+                    <a href="{{ url_for('frontend_check') }}" class="btn btn-primary btn-lg">Check Email Now</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 {% endblock %} 

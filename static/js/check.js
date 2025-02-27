@@ -1,127 +1,198 @@
 document.addEventListener('DOMContentLoaded', function() {
     const spamCheckForm = document.getElementById('spam-check-form');
-    const checkAnotherBtn = document.getElementById('check-another-btn');
-    const tryExampleBtns = document.querySelectorAll('.try-example');
+    const exampleSpamBtn = document.getElementById('example-spam-btn');
+    const exampleHamBtn = document.getElementById('example-ham-btn');
+    const resultCard = document.getElementById('result-card');
+    const emailSubjectInput = document.getElementById('email-subject');
+    const emailContentInput = document.getElementById('email-content');
     
     if (spamCheckForm) {
         spamCheckForm.addEventListener('submit', handleSpamCheck);
     }
     
-    if (checkAnotherBtn) {
-        checkAnotherBtn.addEventListener('click', resetForm);
+    if (exampleSpamBtn) {
+        exampleSpamBtn.addEventListener('click', loadSpamExample);
     }
     
-    if (tryExampleBtns) {
-        tryExampleBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const exampleType = this.getAttribute('data-example');
-                loadExample(exampleType);
-            });
-        });
+    if (exampleHamBtn) {
+        exampleHamBtn.addEventListener('click', loadHamExample);
     }
 });
 
 async function handleSpamCheck(e) {
     e.preventDefault();
     
-    const text = document.getElementById('text').value;
+    const emailSubject = document.getElementById('email-subject').value;
+    const emailContent = document.getElementById('email-content').value;
     
-    if (!text) {
+    // Combine subject and content if subject is provided
+    const textToCheck = emailSubject 
+        ? `Subject: ${emailSubject}\n\n${emailContent}`
+        : emailContent;
+    
+    if (!textToCheck.trim()) {
         showAlert('Please enter some text to check', 'warning');
         return;
     }
     
-    // Get token if available
-    const token = localStorage.getItem('access_token');
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-    
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-    
     try {
-        // Get check spam URL
+        // Show loading state
+        document.getElementById('spam-check-form').querySelector('button[type="submit"]').disabled = true;
+        document.getElementById('spam-check-form').querySelector('button[type="submit"]').innerHTML = 
+            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...';
+        
+        // Get API URL
         const checkSpamUrl = await getApiUrl('api', 'check_spam');
         
-        // Send request to check spam
+        // Get token if available
+        const token = localStorage.getItem('access_token');
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        
+        // Send request
         const response = await fetch(checkSpamUrl, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
-                text: text
+                text: textToCheck
             })
         });
         
-        if (response.status === 429) {
-            showAlert('Rate limit exceeded. Please register for unlimited access.', 'warning');
-            throw new Error('Rate limit exceeded');
-        }
-        
         const data = await response.json();
-        displayResult(data);
+        
+        // Reset button state
+        document.getElementById('spam-check-form').querySelector('button[type="submit"]').disabled = false;
+        document.getElementById('spam-check-form').querySelector('button[type="submit"]').innerHTML = 'Check for Spam';
+        
+        if (response.ok) {
+            displayResult(data);
+        } else {
+            showAlert(data.message || 'Error checking spam', 'danger');
+        }
     } catch (error) {
         console.error('Spam check error:', error);
-        if (error.message !== 'Rate limit exceeded') {
-            showAlert('An error occurred while checking for spam', 'danger');
-        }
+        showAlert('An error occurred during spam check', 'danger');
+        
+        // Reset button state
+        document.getElementById('spam-check-form').querySelector('button[type="submit"]').disabled = false;
+        document.getElementById('spam-check-form').querySelector('button[type="submit"]').innerHTML = 'Check for Spam';
     }
 }
 
 function displayResult(data) {
     const resultCard = document.getElementById('result-card');
-    const resultAlert = document.getElementById('result-alert');
-    const resultHeading = document.getElementById('result-heading');
+    const resultIcon = document.getElementById('result-icon');
+    const resultTitle = document.getElementById('result-title');
+    const confidenceBar = document.getElementById('confidence-bar');
+    const confidenceText = document.getElementById('confidence-text');
+    const resultExplanation = document.getElementById('result-explanation');
     const resultText = document.getElementById('result-text');
-    const resultConfidence = document.getElementById('result-confidence');
-    const spamCheckForm = document.getElementById('spam-check-form');
     
-    // Show result card, hide form
-    resultCard.style.display = 'block';
-    spamCheckForm.style.display = 'none';
-    
-    // Update result content
-    if (data.is_spam) {
-        resultAlert.className = 'alert alert-danger';
-        resultHeading.textContent = 'Spam Detected!';
-    } else {
-        resultAlert.className = 'alert alert-success';
-        resultHeading.textContent = 'Not Spam';
-    }
-    
+    // Set result text
     resultText.textContent = data.text;
-    resultConfidence.textContent = `${(data.confidence * 100).toFixed(2)}%`;
-}
-
-function resetForm() {
-    const resultCard = document.getElementById('result-card');
-    const spamCheckForm = document.getElementById('spam-check-form');
-    const textArea = document.getElementById('text');
     
-    // Hide result card, show form
-    resultCard.style.display = 'none';
-    spamCheckForm.style.display = 'block';
+    // Set confidence
+    const confidencePercent = Math.round(data.confidence * 100);
+    confidenceBar.style.width = `${confidencePercent}%`;
+    confidenceText.textContent = `Confidence: ${confidencePercent}%`;
     
-    // Clear text area
-    textArea.value = '';
-    
-    // Focus on text area
-    textArea.focus();
-}
-
-function loadExample(type) {
-    const textArea = document.getElementById('text');
-    
-    if (type === 'spam') {
-        textArea.value = "Congratulations! You've won a free gift card. Click here to claim your prize now!";
-    } else if (type === 'ham') {
-        textArea.value = "Hey, can we meet tomorrow for coffee at 2pm? Let me know if that works for you.";
+    // Set result based on spam status
+    if (data.is_spam) {
+        resultIcon.innerHTML = '⚠️';
+        resultTitle.textContent = 'Spam Detected';
+        resultTitle.className = 'mt-3 text-danger';
+        confidenceBar.className = 'progress-bar bg-danger';
+        resultExplanation.className = 'alert alert-danger mt-4';
+        resultExplanation.innerHTML = `
+            <strong>This email appears to be spam.</strong><br>
+            Our system has detected characteristics commonly found in spam emails. 
+            Be cautious about clicking any links or downloading attachments from this message.
+        `;
+    } else {
+        resultIcon.innerHTML = '✅';
+        resultTitle.textContent = 'Legitimate Email';
+        resultTitle.className = 'mt-3 text-success';
+        confidenceBar.className = 'progress-bar bg-success';
+        resultExplanation.className = 'alert alert-success mt-4';
+        resultExplanation.innerHTML = `
+            <strong>This email appears to be legitimate.</strong><br>
+            Our system did not detect any spam characteristics in this message.
+            However, always exercise caution with unexpected emails.
+        `;
     }
     
-    // Scroll to form
-    textArea.scrollIntoView({ behavior: 'smooth' });
+    // Show result card
+    resultCard.style.display = 'block';
     
-    // Focus on text area
-    textArea.focus();
+    // Scroll to result
+    resultCard.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function loadSpamExample() {
+    try {
+        const exampleSpamUrl = await getApiUrl('api', 'example_spam');
+        const response = await fetch(exampleSpamUrl);
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Extract subject and content if possible
+            const text = data.text;
+            let subject = '';
+            let content = text;
+            
+            // Try to extract subject if it starts with "Subject:"
+            if (text.startsWith('Subject:')) {
+                const parts = text.split('\n\n', 2);
+                if (parts.length === 2) {
+                    subject = parts[0].replace('Subject:', '').trim();
+                    content = parts[1];
+                }
+            }
+            
+            document.getElementById('email-subject').value = subject;
+            document.getElementById('email-content').value = content;
+        } else {
+            showAlert(data.message || 'Error loading spam example', 'danger');
+        }
+    } catch (error) {
+        console.error('Load spam example error:', error);
+        showAlert('An error occurred while loading spam example', 'danger');
+    }
+}
+
+async function loadHamExample() {
+    try {
+        const exampleHamUrl = await getApiUrl('api', 'example_ham');
+        const response = await fetch(exampleHamUrl);
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Extract subject and content if possible
+            const text = data.text;
+            let subject = '';
+            let content = text;
+            
+            // Try to extract subject if it starts with "Subject:"
+            if (text.startsWith('Subject:')) {
+                const parts = text.split('\n\n', 2);
+                if (parts.length === 2) {
+                    subject = parts[0].replace('Subject:', '').trim();
+                    content = parts[1];
+                }
+            }
+            
+            document.getElementById('email-subject').value = subject;
+            document.getElementById('email-content').value = content;
+        } else {
+            showAlert(data.message || 'Error loading legitimate example', 'danger');
+        }
+    } catch (error) {
+        console.error('Load ham example error:', error);
+        showAlert('An error occurred while loading legitimate example', 'danger');
+    }
 } 

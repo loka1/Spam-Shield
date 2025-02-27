@@ -91,6 +91,11 @@ def register_page():
 def history_page():
     return render_template('history.html')
 
+@app.route(ROUTE_ABOUT, endpoint='frontend_about')
+def about_page():
+    """About Us page"""
+    return render_template('about.html')
+
 # Add a route to get all API URLs for JavaScript
 @app.route('/api/urls', methods=['GET'])
 def api_urls():
@@ -126,6 +131,7 @@ def api_urls():
             'login': f"{base_url}/login",
             'register': f"{base_url}/register",
             'history': f"{base_url}/history",
+            'about': f"{base_url}/about",
             'admin': f"{base_url}/admin",
             'admin_dashboard': f"{base_url}/admin/dashboard",
             'admin_users': f"{base_url}/admin/users",
@@ -163,62 +169,58 @@ def jwt_optional(fn):
 
 # API endpoints
 @ns.route('/check-spam')
-class SpamCheck(Resource):
-    @api.doc(
-        responses={
-            200: 'Success',
-            400: 'Validation Error',
-            429: 'Rate limit exceeded'
-        },
-        security=[{'apikey': []}],
-        description="Check if text is spam. Guest users are limited to 10 requests per day. For unlimited access, register an account."
+class CheckSpam(Resource):
+    @ns.doc(
+        description="Check if text is spam",
+        responses={200: 'Success'}
     )
-    @api.expect(spam_request)
-    @api.marshal_with(spam_response, code=200)
+    @ns.expect(spam_request)
+    @ns.marshal_with(spam_response, code=200)
     @jwt_optional
     def post(self):
         """Check if text is spam"""
         # Get request data
         data = request.get_json()
+        text = data.get('text', '')
         
-        if not data or 'text' not in data:
+        # Check if text is empty
+        if not text:
             return {
                 "status": "error",
-                "message": "Missing required field: text"
+                "message": "Text cannot be empty"
             }, 400
         
-        text = data['text']
-        
-        # Check if user is authenticated
+        # Get user ID if authenticated
         user_id = None
         try:
+            verify_jwt_in_request(optional=True)
             user_id = get_jwt_identity()
         except Exception:
-            # User is not authenticated, check guest limit
-            if not check_guest_limit():
+            # Check guest limit
+            if not check_guest_limit(request.remote_addr):
                 return {
                     "status": "error",
-                    "message": "Rate limit exceeded. Please register for unlimited access."
+                    "message": "Guest daily limit exceeded. Please login or try again tomorrow."
                 }, 429
         
         # Predict if text is spam
         is_spam, confidence = spam_detector.predict(text)
         
-        # Save request to history if user is authenticated
+        # Save to history if user is authenticated
         if user_id:
-            history_entry = RequestHistory(
+            request_history = RequestHistory(
                 user_id=user_id,
                 text=text,
-                is_spam=is_spam,
-                confidence=confidence
+                is_spam=bool(is_spam),  # Convert NumPy bool_ to Python bool
+                confidence=float(confidence)  # Convert NumPy float to Python float
             )
-            db.session.add(history_entry)
+            db.session.add(request_history)
             db.session.commit()
         
         return {
             "status": "success",
-            "is_spam": bool(is_spam),
-            "confidence": float(confidence),
+            "is_spam": bool(is_spam),  # Convert NumPy bool_ to Python bool
+            "confidence": float(confidence),  # Convert NumPy float to Python float
             "text": text
         }
 
@@ -250,34 +252,46 @@ class UserHistory(Resource):
 # Example endpoints
 @ns.route('/example/spam')
 class SpamExample(Resource):
-    @api.doc(responses={200: 'Success'})
-    @api.marshal_with(spam_response, code=200)
+    @ns.doc(
+        description="Get an example of spam text",
+        responses={200: 'Success'}
+    )
     def get(self):
-        """Get an example of spam detection for a typical spam message"""
-        spam_text = "Congratulations! You've won a free gift card. Click here to claim your prize now!"
-        is_spam, confidence = spam_detector.predict(spam_text)
+        """Get an example of spam text"""
+        example = spam_detector.get_example(is_spam=True)
+        
+        # Add a subject line to make it more email-like
+        subject = "URGENT: Action Required - Account Verification"
+        example_with_subject = f"Subject: {subject}\n\n{example}"
+        
+        is_spam, confidence = spam_detector.predict(example_with_subject)
         
         return {
-            "status": "success",
-            "is_spam": bool(is_spam),
-            "confidence": float(confidence),
-            "text": spam_text
+            'text': example_with_subject,
+            'is_spam': bool(is_spam),
+            'confidence': float(confidence)
         }
 
 @ns.route('/example/ham')
 class HamExample(Resource):
-    @api.doc(responses={200: 'Success'})
-    @api.marshal_with(spam_response, code=200)
+    @ns.doc(
+        description="Get an example of non-spam (ham) text",
+        responses={200: 'Success'}
+    )
     def get(self):
-        """Get an example of spam detection for a typical non-spam message"""
-        ham_text = "Hey, can we meet tomorrow for coffee at 2pm? Let me know if that works for you."
-        is_spam, confidence = spam_detector.predict(ham_text)
+        """Get an example of non-spam text"""
+        example = spam_detector.get_example(is_spam=False)
+        
+        # Add a subject line to make it more email-like
+        subject = "Meeting Notes - Project Update"
+        example_with_subject = f"Subject: {subject}\n\n{example}"
+        
+        is_spam, confidence = spam_detector.predict(example_with_subject)
         
         return {
-            "status": "success",
-            "is_spam": bool(is_spam),
-            "confidence": float(confidence),
-            "text": ham_text
+            'text': example_with_subject,
+            'is_spam': bool(is_spam),
+            'confidence': float(confidence)
         }
 
 # Admin routes
