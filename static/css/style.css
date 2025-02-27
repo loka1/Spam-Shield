@@ -10,6 +10,8 @@ body {
 
 .footer {
     margin-top: auto;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
 }
 
 .card {
@@ -461,4 +463,65 @@ textarea.form-control-lg {
 #history-empty .display-4 {
     color: #dee2e6;
     margin-bottom: 1rem;
+}
+
+/* Footer Styles */
+.footer-brand h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.social-links a {
+    font-size: 1.25rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #007bff !important;
+}
+
+.footer h6 {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.footer ul li a {
+    transition: all 0.3s ease;
+}
+
+.footer ul li a:hover {
+    color: #007bff !important;
+    text-decoration: none;
+    padding-left: 5px;
+}
+
+.footer ul li a i {
+    transition: transform 0.3s ease;
+}
+
+.footer ul li a:hover i {
+    transform: translateX(3px);
+}
+
+.payment-methods {
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.payment-methods:hover {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .footer {
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
 } 

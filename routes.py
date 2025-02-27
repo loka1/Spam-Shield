@@ -10,7 +10,7 @@ ROUTE_LOGIN = '/login'
 ROUTE_REGISTER = '/register'
 ROUTE_HISTORY = '/history'
 ROUTE_ABOUT = '/about'
-
+ROUTE_PROFILE = '/profile'
 # API routes
 API_CHECK_SPAM = '/api/check-spam'
 API_HISTORY = '/api/history'

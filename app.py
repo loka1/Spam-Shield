@@ -96,6 +96,11 @@ def about_page():
     """About Us page"""
     return render_template('about.html')
 
+@app.route(ROUTE_PROFILE, endpoint='frontend_profile')
+def profile_page():
+    """Profile page for authenticated users"""
+    return render_template('profile.html')
+
 # Add a route to get all API URLs for JavaScript
 @app.route('/api/urls', methods=['GET'])
 def api_urls():
@@ -132,6 +137,7 @@ def api_urls():
             'register': f"{base_url}/register",
             'history': f"{base_url}/history",
             'about': f"{base_url}/about",
+            'profile': f"{base_url}/profile",
             'admin': f"{base_url}/admin",
             'admin_dashboard': f"{base_url}/admin/dashboard",
             'admin_users': f"{base_url}/admin/users",
