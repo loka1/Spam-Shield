@@ -133,8 +133,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-- Email: support@spamshield.com
-- Website: https://spamshield.com
 - GitHub: [Your GitHub Profile](https://github.com/loka1)
 
 ## Acknowledgments
